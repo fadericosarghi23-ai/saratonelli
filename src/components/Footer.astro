@@ -1,0 +1,171 @@
+---
+/**
+ * Footer — CTA + 4 colonne (studio, contatti, social, naviga) + riga legale.
+ * Recapiti e dati legali sono segnaposto: compilarli con i dati del cliente.
+ */
+import { daRendere } from '../lib/testo';
+
+const year = new Date().getFullYear();
+
+// [[DA VALIDARE: orari assenti sul sito originale, messo "su appuntamento" come suggerito dalla mappa]]
+const orari = 'Ricevo su appuntamento';
+// P.IVA dal sito attuale della cliente.
+const piva = '03897850362';
+// [[DA COMPILARE: URL LinkedIn — l'icona c'è sul sito originale ma senza link]]
+const linkedin = '[[DA COMPILARE: URL LinkedIn]]';
+---
+
+<footer class="ft on-dark">
+  <div class="container">
+    <div class="ft__cta">
+      <p class="eyebrow">Parliamone</p>
+      <a class="ft__big" href="/contatti/">Parlami del<br />tuo progetto<span class="ft__arrow">&#8599;</span></a>
+    </div>
+
+    <div class="ft__grid" data-stagger>
+      <div class="ft__col">
+        <h3 class="ft__h">Studio</h3>
+        <p class="muted">Via Regina Pacis 60<br />41049 Sassuolo (MO)</p>
+        {daRendere(orari) && <p class="ft__note">{orari}</p>}
+      </div>
+
+      <div class="ft__col">
+        <h3 class="ft__h">Contatti</h3>
+        <a class="ft__phone" href="tel:+393468381479">+39 346 8381479</a>
+        <a class="ft__mail tlink" href="https://wa.me/393468381479" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="ft__mail tlink" href="mailto:saratonellistudio@gmail.com">saratonellistudio@gmail.com</a>
+      </div>
+
+      <div class="ft__col">
+        <h3 class="ft__h">Social</h3>
+        <a class="ft__mail tlink" href="https://wa.me/393468381479" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="ft__mail tlink" href="https://www.instagram.com/saratonelli.studio/" target="_blank" rel="noopener">Instagram</a>
+        {daRendere(linkedin) && <a class="ft__mail tlink" href={linkedin} target="_blank" rel="noopener">LinkedIn</a>}
+      </div>
+
+      <div class="ft__col">
+        <h3 class="ft__h">Naviga</h3>
+        <a class="ft__mail tlink" href="/progetti/">Progetti</a>
+        <a class="ft__mail tlink" href="/ambiti/">Ambiti</a>
+        <a class="ft__mail tlink" href="/metodo/">Servizi</a>
+        <a class="ft__mail tlink" href="/studio/">Chi sono</a>
+        <a class="ft__mail tlink" href="/contatti/">Contatti</a>
+      </div>
+    </div>
+
+    <div class="ft__base">
+      <p>&copy; {year} Sara Tonelli Studio</p>
+      <p class="muted">Progettazione architettonica e interior design · Sassuolo</p>
+      {piva && <p class="muted">P.IVA {piva}</p>}
+    </div>
+  </div>
+</footer>
+
+<style>
+.ft {
+  padding-block:clamp(3.5rem,8vw,6rem) 2.5rem
+}
+
+.ft__cta {
+  border-bottom:1px solid rgba(244,242,238,.15);
+  padding-bottom:clamp(2rem,5vw,3.5rem);
+  margin-bottom:clamp(2.5rem,5vw,4rem)
+}
+
+.ft__big {
+  display:block;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(2.8rem,11vw,8rem);
+  line-height:.95;
+  letter-spacing:-.03em;
+  color:var(--on-dark);
+  text-transform:uppercase;
+  position:relative;
+  transition:color .4s var(--ease)
+}
+
+.ft__big:hover {
+  color:var(--accent-on-dark)
+}
+
+.ft__arrow {
+  font-size:.5em;
+  vertical-align:super;
+  margin-left:.1em;
+  display:inline-block;
+  transition:transform .4s var(--ease)
+}
+
+.ft__big:hover .ft__arrow {
+  transform:translate(.15em,-.15em)
+}
+
+.ft__grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2.5rem 2rem
+}
+
+.ft__h {
+  font-family:var(--font-body);
+  font-size:.74rem;
+  font-weight:600;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--on-dark-muted);
+  margin-bottom:1.1rem
+}
+
+.ft__col p {
+  margin:0 0 .5rem
+}
+
+.ft__col a {
+  display:block;
+  color:var(--on-dark);
+  margin-bottom:.55rem;
+  font-size:.95rem
+}
+
+.ft__phone {
+  font-family:var(--font-display);
+  font-size:1.5rem;
+  font-weight:500;
+  margin-bottom:.8rem!important
+}
+
+.ft__note {
+  font-size:.85rem;
+  color:var(--on-dark-muted);
+  margin-top:.8rem
+}
+
+.ft__base {
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:.5rem;
+  margin-top:clamp(2.5rem,5vw,4rem);
+  padding-top:1.5rem;
+  border-top:1px solid rgba(244,242,238,.15);
+  font-size:.82rem;
+  color:var(--on-dark-muted)
+}
+
+.ft__base p {
+  margin:0
+}
+
+@media(max-width:780px) {
+  .ft__grid {
+    grid-template-columns:repeat(2,1fr)
+  }
+}
+
+@media(max-width:460px) {
+  .ft__grid {
+    grid-template-columns:1fr
+  }
+}
+</style>

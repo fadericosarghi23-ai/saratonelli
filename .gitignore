@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+
+# generato su Windows: su Linux fa saltare i binding nativi (npm#4828)
+package-lock.json
+
+# documenti interni, non versionati
+CONTENT_FILL.md
+*.pdf

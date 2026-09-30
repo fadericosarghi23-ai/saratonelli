@@ -1,0 +1,173 @@
+---
+/**
+ * Metodo — i sei servizi della cliente raggruppati nelle tre fasi della base.
+ * Titoli dei servizi VERBATIM; descrizioni RISCRITTE da noi (il sito attuale ha solo i titoli).
+ * [[DA VALIDARE: descrizioni dei servizi e titoli delle fasi, da approvare con la cliente]]
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const PHASES = [
+  {
+    n: '01',
+    title: "Progetto",
+    cards: [
+      { t: "Progettazione architettonica", d: "Progetto la tua casa o il tuo spazio dalla prima idea agli elaborati, curando funzionalità, luce e vivibilità." },
+      { t: "Pratiche edilizie e catastali", d: "Gestisco permessi, pratiche edilizie e aggiornamenti catastali, così segui il progetto senza pensare alla burocrazia." },
+    ],
+  },
+  {
+    n: '02',
+    title: "Interni",
+    cards: [
+      { t: "Progettazione d'interni (in loco e online)", d: "Studio distribuzione degli spazi, materiali e arredi su misura, in presenza o a distanza." },
+      { t: "Consulenza d'arredo e styling interni", d: "Ti aiuto a scegliere arredi, finiture e dettagli per dare coerenza e personalità agli ambienti." },
+    ],
+  },
+  {
+    n: '03',
+    title: "Cantiere",
+    cards: [
+      { t: "Direzione lavori", d: "Coordino imprese, artigiani e fornitori e seguo il cantiere perché tutto sia realizzato come previsto, nei tempi e nei costi." },
+      { t: "Direzione artistica in loco", d: "Presidio l'estetica in cantiere, controllando che materiali e finiture rispettino il progetto fin nei dettagli." },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Servizi · Sara Tonelli Studio"
+  description="Progettazione architettonica, pratiche edilizie e catastali, interni, consulenza d'arredo, direzione lavori e direzione artistica a Sassuolo (MO)."
+>
+  <main id="main">
+    <section class="mhead section">
+      <div class="container">
+        <p class="eyebrow" data-reveal>Servizi</p>
+        <h1 class="display mhead__title" data-reveal>Il mio modo<br />di progettare</h1>
+        <p class="lead mhead__lead" data-reveal>
+          Ogni mio progetto inizia sempre con l'ascolto. Prima ancora delle planimetrie, dei materiali o dei colori, mi interessa conoscere le persone. Come vivono. Come si muovono negli spazi. Quali sono le loro abitudini. Cosa desiderano davvero. Solo dopo inizio a progettare. Perché credo che una casa debba adattarsi alle persone, non il contrario. Il mio obiettivo non è creare ambienti semplicemente belli. Voglio progettare luoghi che migliorino la quotidianità, che facciano sentire bene, che raccontino chi li abita. Una casa progettata con attenzione può cambiare molto più dell'aspetto di uno spazio. Può cambiare il modo in cui viviamo ogni giorno.
+        </p>
+      </div>
+    </section>
+
+    <section class="section msteps section--tint">
+      <div class="container">
+        {PHASES.map((ph) => (
+          <div class="mphase" data-reveal>
+            <div class="mphase__head">
+              <span class="mphase__n">{ph.n}</span>
+              <h2 class="mphase__title">{ph.title}</h2>
+            </div>
+            <div class="mphase__steps" data-stagger>
+              {ph.cards.map((c) => (
+                <div class="mcard">
+                  <h3 class="mcard__t">{c.t}</h3>
+                  <p class="mcard__d muted">{c.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+.mhead {
+  padding-top:calc(var(--header-h) + clamp(2.5rem,6vw,5rem));
+  padding-bottom:0
+}
+
+.mhead__title {
+  margin:1rem 0 1.6rem
+}
+
+.mhead__lead {
+  max-width:48rem
+}
+
+.mphase {
+  padding-block:clamp(2.5rem,5vw,4rem);
+  border-top:1px solid var(--line)
+}
+
+.mphase:first-child {
+  border-top:2px solid var(--ink)
+}
+
+.mphase__head {
+  display:flex;
+  align-items:baseline;
+  gap:1.2rem;
+  margin-bottom:2rem
+}
+
+.mphase__n {
+  font-family:var(--font-display);
+  font-size:clamp(2.5rem,5vw,4rem);
+  font-weight:600;
+  color:var(--accent);
+  line-height:.8;
+  letter-spacing:-.03em
+}
+
+.mphase__title {
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  letter-spacing:-.02em
+}
+
+.mphase__steps {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1.5rem
+}
+
+.mcard {
+  position:relative;
+  border-top:1px solid var(--line);
+  padding-top:1rem
+}
+
+.mcard:before {
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  height:2px;
+  width:0;
+  background:var(--accent);
+  transition:width .5s var(--ease)
+}
+
+.mcard:hover:before {
+  width:100%
+}
+
+.mcard__t {
+  font-size:1.05rem;
+  margin-bottom:.5rem;
+  letter-spacing:-.01em;
+  transition:color .3s var(--ease)
+}
+
+.mcard:hover .mcard__t {
+  color:var(--accent)
+}
+
+.mcard__d {
+  font-size:.9rem;
+  line-height:1.55
+}
+
+@media(max-width:820px) {
+  .mphase__steps {
+    grid-template-columns:1fr 1fr
+  }
+}
+
+@media(max-width:520px) {
+  .mphase__steps {
+    grid-template-columns:1fr
+  }
+}
+</style>

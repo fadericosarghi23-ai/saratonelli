@@ -1,0 +1,177 @@
+---
+/**
+ * IntroOverlay — l'apertura del sito.
+ *
+ * Disegna il marchio di Sara Tonelli Studio come si disegna a mano: prima il profilo della casa,
+ * poi dalla base cresce il germoglio (stelo e foglia grande, poi la foglia piccola), infine sotto
+ * compare il logotipo in maiuscolo spaziato, come nell'header del sito originale.
+ * I tracciati sono quelli di public/brand/logo.svg.
+ *
+ * Regole che si è dato questo componente:
+ * - la coreografia è tutta in CSS, così parte al primo frame e non dipende dal JS;
+ * - alla fine dell'animazione il velo si toglie da solo (animation-fill-mode: forwards),
+ *   quindi anche se il JS non gira il sito resta utilizzabile;
+ * - il JS serve solo a ricordare che l'intro è già stata vista in questa sessione,
+ *   a sbloccare lo scroll e a permettere di saltarla con un clic o un tasto;
+ * - con prefers-reduced-motion l'intro non compare affatto.
+ */
+---
+
+<div class="opening" data-opening aria-hidden="true">
+  <div class="opening__stage">
+    <svg class="opening__mark" viewBox="412 352 430 500" aria-hidden="true">
+      <!-- pathLength="1": ogni tratto si disegna con lo stesso dasharray, qualunque sia la sua lunghezza -->
+      <path class="opening__stroke opening__stroke--house" pathLength="1" d="M432 832 V526 L627 372 L821 527" />
+      <path class="opening__stroke opening__stroke--stem" pathLength="1" d="M695 832 V760 C698 667 744 577 821 570 C826 664 792 716 722 720" />
+      <path class="opening__stroke opening__stroke--leaf" pathLength="1" d="M694 766 C648 764 618 722 618 666 C662 674 690 708 694 766" />
+    </svg>
+
+    <p class="opening__word">Sara Tonelli Studio</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const intro = document.querySelector('[data-opening]');
+    if (!intro) return;
+
+    // se il velo non si vede — già visto in questa sessione, o animazioni ridotte —
+    // lo script non deve fare niente: niente blocco dello scroll, niente timer
+    const nascosto =
+      document.documentElement.classList.contains('opening-skip') ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (nascosto) {
+      intro.remove();
+      return;
+    }
+
+    const chiudi = () => {
+      intro.classList.add('is-off');
+      document.documentElement.classList.remove('opening-lock');
+      try { sessionStorage.setItem('studio-intro', '1'); } catch {}
+      // rete di sicurezza: se le animazioni sono congelate (scheda in secondo piano,
+      // batteria bassa, throttling del browser) l'animationend non arriva mai.
+      // Il velo se ne va comunque.
+      setTimeout(() => intro.remove(), 450);
+    };
+
+    // blocca lo scroll mentre il velo è su, ma con una rete di sicurezza:
+    // qualunque cosa succeda, dopo 2,9s lo scroll torna libero
+    document.documentElement.classList.add('opening-lock');
+    setTimeout(chiudi, 2900);
+
+    // si può saltare
+    ['pointerdown', 'keydown', 'wheel'].forEach((ev) =>
+      window.addEventListener(ev, chiudi, { once: true, passive: true })
+    );
+
+    // quando il velo ha finito di sparire, esce anche dal DOM
+    intro.addEventListener('animationend', (e) => {
+      if (e.animationName.startsWith('opening-exit')) intro.remove();
+    });
+  })();
+</script>
+
+<style>
+  .opening {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    animation: opening-exit 0.6s var(--ease) 2.05s forwards;
+  }
+
+  .opening.is-off {
+    /* non aspetta l'animazione per smettere di intercettare i clic */
+    pointer-events: none;
+    animation: opening-exit 0.35s var(--ease) forwards;
+  }
+
+  .opening__stage {
+    display: grid;
+    justify-items: center;
+    gap: clamp(1.4rem, 3.5vh, 2.2rem);
+  }
+
+  /* il marchio: tratto sottile come l'originale, spessore costante a qualunque dimensione */
+  .opening__mark {
+    width: auto;
+    height: clamp(120px, 22vh, 190px);
+    overflow: visible;
+  }
+
+  .opening__stroke {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.6px;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: opening-draw 0.95s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+  }
+
+  /* il germoglio cresce dalla base dopo la casa: prima lo stelo con la foglia grande… */
+  .opening__stroke--stem {
+    animation-duration: 0.8s;
+    animation-delay: 0.85s;
+  }
+
+  /* …poi la foglia piccola */
+  .opening__stroke--leaf {
+    animation-duration: 0.55s;
+    animation-delay: 1.2s;
+  }
+
+  /* il logotipo: maiuscolo spaziato e leggero, come l'header del sito originale */
+  .opening__word {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: clamp(0.78rem, 2.2vw, 1rem);
+    font-weight: 300;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
+    /* lo spazio finale del letter-spacing sbilancerebbe il centro */
+    margin-right: -0.32em;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: opening-word 0.7s var(--ease) 1.35s forwards;
+  }
+
+  @keyframes opening-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes opening-word {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes opening-exit {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  /* già vista in questa sessione, oppure animazioni ridotte: niente intro */
+  :global(html.opening-skip) .opening {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .opening {
+      display: none;
+    }
+  }
+</style>
